@@ -47,12 +47,12 @@ q1 = list(map(int, input().split()))
 p = [None]+q1[1:N+1]
 a = [None]+q1[N+1:2*N+1]
 for i in range(1, N+1):
-        # 채팅의 권한이 20을 초과하는 경우 20으로 제한합니다.
-        if a[i] > 20:
-            a[i] = 20
+    # 채팅의 권한이 20을 초과하는 경우 20으로 제한합니다.
+    if a[i] > 20:
+        a[i] = 20
 
 # chatrooms = initialize_chatrooms(p, a)
-notification = [None]+[False]*N
+notification = [None]+[True]*N
 num_can_reach = [None]+[0]*N
 diff = [[0 for i in range(22)] for j in range(N+1)]
 
@@ -72,10 +72,10 @@ def toggle_notification(chatroom_id):
     num = 1
     while cur:
         for i in range(num, 22):
-            num_can_reach[cur] += diff[chatroom_id][i] if notification[chatroom_id] else -diff[chatroom_id][i]
+            num_can_reach[cur] += diff[chatroom_id][i] if not notification[chatroom_id] else -diff[chatroom_id][i]
             if i > num:
-                diff[cur][i-num] += diff[chatroom_id][i] if notification[chatroom_id] else -diff[chatroom_id][i]
-        if notification[cur]:
+                diff[cur][i-num] += diff[chatroom_id][i] if not notification[chatroom_id] else -diff[chatroom_id][i]
+        if not notification[cur]:
             break
         cur = p[cur]
         num += 1
@@ -87,7 +87,7 @@ def set_authority(chatroom_id, authority):
     a[chatroom_id] = authority
 
     diff[chatroom_id][before] -= 1
-    if not notification[chatroom_id]:
+    if notification[chatroom_id]:
         cur = p[chatroom_id]
         num = 1
         # 상위 채팅으로 이동하며 nx와 val 값을 갱신합니다.
@@ -96,13 +96,13 @@ def set_authority(chatroom_id, authority):
                 num_can_reach[cur] -= 1
             if before > num:
                 diff[cur][before - num] -= 1
-            if notification[cur]:
+            if not notification[cur]:
                 break
             cur = p[cur]
             num += 1
 
     diff[chatroom_id][authority] += 1
-    if not notification[chatroom_id]:
+    if notification[chatroom_id]:
         cur = p[chatroom_id]
         num = 1
         # 상위 채팅으로 이동하며 nx와 val 값을 갱신합니다.
@@ -111,7 +111,7 @@ def set_authority(chatroom_id, authority):
                 num_can_reach[cur] += 1
             if authority > num:
                 diff[cur][authority - num] += 1
-            if notification[cur]:
+            if not notification[cur]:
                 break
             cur = p[cur]
             num += 1
@@ -120,16 +120,16 @@ def change_parents(chatroom_id1, chatroom_id2):
     before_noti1 = notification[chatroom_id1]
     before_noti2 = notification[chatroom_id2]
 
-    if not notification[chatroom_id1]:
+    if notification[chatroom_id1]:
         toggle_notification(chatroom_id1)
-    if not notification[chatroom_id2]:
+    if notification[chatroom_id2]:
         toggle_notification(chatroom_id2)
 
     p[chatroom_id1], p[chatroom_id2] = p[chatroom_id2], p[chatroom_id1]
 
-    if not before_noti1:
+    if before_noti1:
         toggle_notification(chatroom_id1)
-    if not before_noti2:
+    if before_noti2:
         toggle_notification(chatroom_id2)
 
 
