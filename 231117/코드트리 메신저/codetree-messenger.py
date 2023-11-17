@@ -46,6 +46,11 @@ N, Q = map(int, input().split())
 q1 = list(map(int, input().split()))
 p = [None]+q1[1:N+1]
 a = [None]+q1[N+1:2*N+1]
+for i in range(1, N+1):
+        # 채팅의 권한이 20을 초과하는 경우 20으로 제한합니다.
+        if a[i] > 20:
+            a[i] = 20
+
 # chatrooms = initialize_chatrooms(p, a)
 notification = [None]+[False]*N
 num_can_reach = [None]+[0]*N
@@ -78,6 +83,7 @@ def toggle_notification(chatroom_id):
 
 def set_authority(chatroom_id, authority):
     before = a[chatroom_id]
+    authority = min(authority, 20)
     a[chatroom_id] = authority
 
     diff[chatroom_id][before] -= 1
