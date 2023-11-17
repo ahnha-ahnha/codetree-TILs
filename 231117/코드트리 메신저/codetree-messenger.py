@@ -38,7 +38,7 @@
 
 #     return count
 
-### class 화 포기
+### class 화 포기 & Solution 참조
 
 N, Q = map(int, input().split())
 
